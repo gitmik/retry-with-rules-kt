@@ -1,13 +1,28 @@
-# Kotlin Library
+# Retry Framework
 
-A sample Kotlin library project that can be used in both Java and Kotlin projects.
+A flexible and extensible retry mechanism framework for Java and Kotlin projects, with support for multiple frameworks.
 
-## Requirements
+## Project Structure
 
-- Java 11 or higher
-- Maven 3.6 or higher
+The project is organized into the following modules:
 
-## Building the Project
+- `retry-core`: Core retry mechanism implementation
+- `retry-micronaut`: Micronaut framework integration
+- `retry-spring`: Spring Boot framework integration
+- `retry-micronaut-example`: Example application using Micronaut
+- `retry-spring-example`: Example application using Spring Boot
+
+## Features
+
+- Retry mechanism with support for retry rules
+- Rule groups based on enums for domain-specific scenarios
+- Support for input argument mutation during retries
+- Full retry history access
+- Framework integrations (Micronaut, Spring Boot)
+- Annotation-based configuration
+- Type-safe rule implementation
+
+## Building
 
 To build the project, run:
 
@@ -17,49 +32,35 @@ mvn clean install
 
 ## Usage
 
-Add the following dependency to your project's `pom.xml`:
-
-```xml
-<dependency>
-    <groupId>com.example</groupId>
-    <artifactId>kotlin-library</artifactId>
-    <version>1.0-SNAPSHOT</version>
-</dependency>
-```
-
-### Example Usage in Kotlin
+### Core Module
 
 ```kotlin
-import com.example.library.Example
+// Define a retry group
+val paymentGroup = RetryGroupBuilder<BusinessScenario, PaymentRequest, String, Exception>(BusinessScenario.PAYMENT_PROCESSING)
+    .addRule(PaymentAmountRule())
+    .build()
 
-fun main() {
-    val example = Example()
-    println(example.greet("World")) // Outputs: Hello, World!
-    println(example.add(2, 3)) // Outputs: 5
+// Register the group
+retryMechanism.registerGroup(paymentGroup)
+
+// Use with annotation
+@RetryWithRules(attempts = 3, category = BusinessScenario::class)
+fun processPayment(request: PaymentRequest): String {
+    // Implementation
 }
 ```
 
-### Example Usage in Java
+### Framework Integrations
 
-```java
-import com.example.library.Example;
+See the respective example modules for detailed usage:
+- [Micronaut Example](retry-micronaut-example/README.md)
+- [Spring Boot Example](retry-spring-example/README.md)
 
-public class Main {
-    public static void main(String[] args) {
-        Example example = new Example();
-        System.out.println(example.greet("World")); // Outputs: Hello, World!
-        System.out.println(example.add(2, 3)); // Outputs: 5
-    }
-}
-```
+## Requirements
 
-## Running Tests
-
-To run the tests, execute:
-
-```bash
-mvn test
-```
+- Java 11 or higher
+- Maven 3.6 or higher
+- Kotlin 1.9.22
 
 ## License
 
