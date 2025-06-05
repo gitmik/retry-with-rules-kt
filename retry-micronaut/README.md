@@ -15,12 +15,12 @@ Micronaut framework integration for the retry mechanism.
 
 ```kotlin
 @Factory
-class RetryConfiguration<T : Enum<T>> {
+class RetryConfiguration<T : Enum<T>>(private val enumClass: Class<T>) {
     @Singleton
     fun retryMechanism(): RetryMechanism<T> = RetryMechanism()
 
     @Singleton
-    fun retryAspect(retryMechanism: RetryMechanism<T>): RetryAspect<T> = RetryAspect(retryMechanism)
+    fun retryAspect(retryMechanism: RetryMechanism<T>): RetryAspect<T> = RetryAspect(retryMechanism, enumClass.kotlin)
 }
 ```
 

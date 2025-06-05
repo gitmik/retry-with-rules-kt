@@ -16,15 +16,15 @@ Spring Boot framework integration for the retry mechanism.
 ```kotlin
 @Configuration
 @EnableAspectJAutoProxy
-class RetryConfiguration<T : Enum<T>> {
+class RetryConfiguration(private val enumClass: Class<out Enum<*>>) {
     @Bean
-    fun retryMechanism(): RetryMechanism<T> = RetryMechanism()
+    fun <T : Enum<T>> retryMechanism(): RetryMechanism<T> = RetryMechanism()
 
     @Bean
-    fun retryAspect(retryMechanism: RetryMechanism<T>): RetryAspect<T> = RetryAspect(retryMechanism)
+    fun <T : Enum<T>> retryAspect(retryMechanism: RetryMechanism<T>): RetryAspect<T> = RetryAspect(retryMechanism, enumClass.kotlin as kotlin.reflect.KClass<T>)
 
     @Bean
-    fun springRetryAspect(retryAspect: RetryAspect<T>): SpringRetryAspect<T> = SpringRetryAspect(retryAspect)
+    fun <T : Enum<T>> springRetryAspect(retryAspect: RetryAspect<T>): SpringRetryAspect<T> = SpringRetryAspect(retryAspect)
 }
 ```
 
