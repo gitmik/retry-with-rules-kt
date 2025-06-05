@@ -21,7 +21,7 @@ class SpringRetryAspect<T : Enum<T>>(
         val input = joinPoint.args.firstOrNull()
             ?: throw IllegalArgumentException("Method must have at least one parameter")
 
-        return retryAspect.intercept(
+        return retryAspect.intercept<Any, Any, Exception>(
             annotation = retryWithRules,
             input = input,
             function = { joinPoint.proceed() }

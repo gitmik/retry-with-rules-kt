@@ -6,7 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="kotlin-library" />
+        <module name="retry-micronaut" />
+        <module name="retry-spring" />
+        <module name="retry-core" />
+        <module name="retry-micronaut-example" />
+        <module name="retry-spring-example" />
       </profile>
     </annotationProcessing>
   </component>

@@ -20,13 +20,19 @@ class MicronautRetryInterceptor<T : Enum<T>> @Inject constructor(
 ) : MethodInterceptor<Any, Any> {
 
     override fun intercept(context: MethodInvocationContext<Any, Any>): Any {
-        val annotation = context.getAnnotation(RetryWithRules::class.java)
+        val annotationValue = context.getAnnotation(RetryWithRules::class.java)
             ?: return context.proceed()
+
+        val attempts = annotationValue.intValue("attempts").orElse(3)
+        val category = annotationValue.classValue("category").orElse(null)
+            ?: throw IllegalArgumentException("RetryWithRules annotation must specify a category")
+
+        val annotation = RetryWithRules(attempts = attempts, category = (category as Class<out Enum<*>>).kotlin)
 
         val input = context.parameterValues.firstOrNull()
             ?: throw IllegalArgumentException("Method must have at least one parameter")
 
-        return retryAspect.intercept(
+        return retryAspect.intercept<Any, Any, Exception>(
             annotation = annotation,
             input = input,
             function = { context.proceed() }

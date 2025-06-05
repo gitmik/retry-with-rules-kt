@@ -18,17 +18,20 @@ annotation class RetryWithRules(
  * Aspect implementation for the RetryWithRules annotation.
  * @param T The enum type that identifies retry groups
  */
-class RetryAspect<T : Enum<T>>(private val retryMechanism: RetryMechanism<T>) {
+class RetryAspect<T : Enum<T>>(
+    private val retryMechanism: RetryMechanism<T>,
+    private val enumClass: KClass<T>
+) {
     /**
      * Intercepts method calls annotated with RetryWithRules.
      * @param I The type of the input arguments
      * @param R The type of the return value
-     * @param E The type of exceptions that can be thrown
+     * @param E The type of the exception
      * @param annotation The RetryWithRules annotation
      * @param input The input arguments
      * @param function The function to execute
      * @return The result of the function execution
-     * @throws E if all retry attempts fail
+     * @throws Exception if all retry attempts fail
      */
     @Suppress("UNCHECKED_CAST")
     fun <I, R, E : Throwable> intercept(
@@ -36,10 +39,9 @@ class RetryAspect<T : Enum<T>>(private val retryMechanism: RetryMechanism<T>) {
         input: I,
         function: (I) -> R
     ): R {
-        val category = annotation.category.java.enumConstants?.firstOrNull() as? T
-            ?: throw IllegalArgumentException("Invalid retry category: ${annotation.category}")
-
-        return retryMechanism.execute(
+        val category = enumClass.java.enumConstants?.firstOrNull()
+            ?: throw IllegalArgumentException("Invalid retry category: \\${annotation.category}")
+        return retryMechanism.execute<I, R, E>(
             category = category,
             maxAttempts = annotation.attempts,
             input = input,
