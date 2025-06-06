@@ -11,10 +11,6 @@
 
     <artifactId>retry-spring</artifactId>
 
-    <properties>
-        <kotlin.version>2.1.21</kotlin.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.example</groupId>
@@ -28,12 +24,10 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <version>${kotlin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
-            <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -67,7 +61,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>${maven.compiler.target}</jvmTarget>
                 </configuration>
             </plugin>
         </plugins>
